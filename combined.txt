@@ -1,0 +1,256 @@
+--------------------------
+Path: README.md
+
+# tic-tac-toe
+--------------------------
+Path: combined.txt
+
+
+--------------------------
+Path: index.html
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-tac-toe</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="main.js"></script>
+</head>
+
+<body>
+  <div id="container" class="container">
+    <h1>Tic-tac-toe</h1>
+    <hr>
+    <div id="message" class="message"> </div>
+    <div id="game-board" class="game-board">
+      <div id="square1" class="square" data-id="1"></div>
+      <div id="square2" class="square" data-id="2"></div>
+      <div id="square3" class="square" data-id="3"></div>
+      <div id="square4" class="square" data-id="4"></div>
+      <div id="square5" class="square" data-id="5"></div>
+      <div id="square6" class="square" data-id="6"></div>
+      <div id="square7" class="square" data-id="7"></div>
+      <div id="square8" class="square" data-id="8"></div>
+      <div id="square9" class="square" data-id="9"></div>
+    </div>
+  </div>
+
+</body>
+
+</html>
+--------------------------
+Path: main.js
+
+// PLAYER
+
+function Player(symbol) {
+  this.symbol = symbol;
+
+  const getSymbol = () => {
+    return symbol;
+  };
+
+  return { getSymbol };
+}
+
+// BOARD
+
+const gameBoard = () => {
+  let board = ["", "", "", "", "", "", "", "", ""];
+
+  const setSquare = (index, symbol) => {
+    if (index > board.length) return;
+    board[index] = symbol;
+  };
+
+  const getSquare = (index) => {
+    if (index > board.length) return;
+    return board[index];
+  };
+
+  const reset = () => {
+    board = ["", "", "", "", "", "", "", "", ""];
+  };
+
+  return { setSquare, getSquare, reset };
+};
+
+// UI MODULE
+const uiModule = (() => {
+  const squareEls = document.querySelectorAll(".square");
+  const messageEl = document.querySelector("#message");
+
+  squareEls.forEach((square) => {
+    square.addEventListener("click", (e) => {
+      if (gameModule.getGameFinished() || e.target.textContent !== "") return;
+      gameModule.playRound(parseInt(e.target.dataset.id));
+    })
+  }) 
+
+  const updateBoard = () => {
+    for (let i = 0; i < squareEls.length; i++) {
+      squareEls[i].textContent = gameBoard.getSquare(i);
+    }
+  }
+
+  const displayMessage = (message) => {
+    messageEl.textContent = message;
+  }
+
+  const displayEndResult = (winner) => {
+    if (winner === "draw") {
+      displayMessage("It's a draw");
+    }
+    else {
+      displayMessage(`Player ${winner} has won!`);
+    }
+  }
+
+  return { displayMessage, displayEndResult };
+
+})();
+
+// GAME MODULE
+
+const gameModule = (() => {
+  const playerX = Player("X");
+  const playerO = Player("O");
+  let round = 1;
+  let gameFinished = false;
+
+  const getCurrentSymbol = () => {
+    return round % 2 === 1 ? playerX.getSymbol() : playerO.getSymbol();
+  };
+
+  const playRound = (latestSquare) => {
+
+    const checkWin = (latestSquare) => {
+      const winCombinations = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+      ];
+      const isGameWon = winCombinations
+        .filter((combination) => combination.includes(latestSquare))
+        .some((validCombination) =>
+          validCombination.every(
+            (index) => gameBoard.getSquare(index) === getCurrentSymbol()
+          )
+        );
+      return isGameWon;
+    };
+
+    gameBoard.setSquare(latestSquare, getCurrentSymbol());
+
+    if (checkWin(latestSquare)) {
+      uiModule.displayEndResult(getCurrentSymbol());
+      gameFinished = true;
+      return;
+    }
+
+    if (round === 9) {
+      uiModule.displayEndResult("draw");
+    }
+
+    round++;
+  
+    uiModule.displayMessage(`Round ${round} - Player ${getCurrentSymbol()}'s turn!`);
+  };
+
+  const getGameFinished = () => {
+    return gameFinished;
+  };
+
+  const resetGame = () => {
+    round = 1;
+    gameFinished = false;
+  };
+
+  return { playRound, getGameFinished, resetGame };
+})();
+--------------------------
+Path: styles.css
+
+/* Resets and general */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  border: 1px solid red;
+}
+
+html {
+  position: relative;
+  height: 100dvh;
+}
+
+body {
+  font-family: "Roboto", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  line-height: 1.6;
+  padding: 5px;
+}
+
+h1, h2 {
+  color: #333;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+hr {
+  border-top: 1px solid rgb(206, 206, 206);
+  align-self: stretch;
+  margin: 1rem;
+}
+
+h1 + p {
+  margin-bottom: 1rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.invisible {
+  visibility: none;
+}
+
+/* Game Board */
+
+#game-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 454px;
+  height: 454px;
+}
+
+.square {
+  font-size: 100px;
+  text-align: center;
+  width: 150px;
+  height: 150px;
+}
+--------------------------
+Path: tempCodeRunnerFile.js
+
+function checkRows() {
+//   if (board.length === 0) return false;
+//   const firstKey = 
+// }

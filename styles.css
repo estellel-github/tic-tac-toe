@@ -1,0 +1,99 @@
+/* Resets and general */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  border: 1px solid red;
+}
+
+html {
+  position: relative;
+  height: 100dvh;
+}
+
+body {
+  height: 100%;
+  font-family: "Roboto", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  margin: 0;
+}
+
+h1 {
+  color: #333;
+  font-size: 4rem;
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+hr {
+  width: 90%;
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 20px auto;
+}
+
+h1 + p {
+  margin-bottom: 1rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+  height: 100%;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 0 8px;
+  background: white;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.invisible {
+  visibility: none;
+}
+
+/* Game Board */
+
+#game-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 450px;
+  height: 450px;
+  margin: 0 auto;
+  border: 1px solid lightgrey;
+}
+
+.square {
+  font-size: 100px;
+  text-align: center;
+  width: 150px;
+  height: 150px;
+  border: 1px solid lightgrey;
+}
+
+.square-possible {
+  background-color: rgb(248, 246, 246);
+}
+
+.message {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer {
+  color: #585858;
+  font-size: 1rem;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 42px;
+}
