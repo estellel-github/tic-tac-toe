@@ -13,7 +13,7 @@ function Player(symbol) {
 // BOARD
 // IIFE
 
-const gameBoard = (() => {
+const gameBoard_old = (() => {
   let board = ["", "", "", "", "", "", "", "", ""];
 
   const setSquare = (index, symbol) => {

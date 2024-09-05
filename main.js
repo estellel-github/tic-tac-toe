@@ -17,7 +17,21 @@ function Player(symbol, name) {
   return { getPlayerSymbol, getPlayerName, setPlayerName };
 }
 
-const gameBoard = () => {
+const square = () => {
+  let value = "";
+
+  const addSymbol = (player) => {
+    value = player.getPlayerSymbol();
+  };
+
+  const getValue = () => {
+    return value;
+  };
+
+  return { addSymbol, getValue };
+};
+
+const gameBoard = (() => {
   const board = [];
   for (let i = 0; i <= 8; i++) {
     board.push(square());
@@ -34,14 +48,8 @@ const gameBoard = () => {
   };
 
   const dropSymbol = (squareIndex, player) => {
-    if (squareIndex > board.length) {
+    if (squareIndex > board.length || board[squareIndex].getValue() !== "") {
       isMoveValid = false;
-      console.log("Actually they can't! It's not a valid square. Try again.");
-      return;
-    }
-    if (board[squareIndex].getValue() !== "") {
-      isMoveValid = false;
-      console.log("Actually they can't! The square is not empty. Try again.");
       return;
     }
     isMoveValid = true;
@@ -49,21 +57,7 @@ const gameBoard = () => {
   };
 
   return { getBoard, dropSymbol, getIsMoveValid };
-};
-
-const square = () => {
-  let value = "";
-
-  const addSymbol = (player) => {
-    value = player.getPlayerSymbol();
-  };
-
-  const getValue = () => {
-    return value;
-  };
-
-  return { addSymbol, getValue };
-};
+})();
 
 const uiController = (() => {
   const squareEls = document.querySelectorAll(".square");
@@ -71,19 +65,19 @@ const uiController = (() => {
 
   const updateBoard = () => {
     for (let i = 0; i < squareEls.length; i++) {
-      squareEls[i].textContent = board[i].getValue(); // RECHECK???
+      squareEls[i].textContent = gameBoard.getBoard()[i].getValue();
     }
   };
 
   squareEls.forEach((square) => {
     square.addEventListener("click", (e) => {
-      if (gameController.getGameIsFinished()) return;
+      if (gameController.getIsGameFinished()) return;
       gameController.playRound(parseInt(e.target.dataset.id));
-      updateBoard(); // RECHECK???
+      updateBoard();
     });
 
     square.addEventListener("mouseover", (e) => {
-      if (gameController.getGameIsFinished()) return;
+      if (gameController.getIsGameFinished()) return;
       if (e.target.textContent === "") {
         e.target.classList.add("square-possible");
       }
@@ -95,25 +89,23 @@ const uiController = (() => {
   });
 
   const displayRoundMessage = (round, activePlayer) => {
-    messageEl.textContent = `Round ${round} - ${activePlayer.getPlayerName}'s turn.`;
+    messageEl.textContent = `Round ${round} - ${activePlayer.getPlayerName()}'s turn.\nPlace the ${activePlayer.getPlayerSymbol()} symbol on an empty square!`;
   };
 
   const displayEndResult = (winner) => {
     if (winner === "draw") {
-      displayMessage("The board is full and no one won! It's a draw!");
+      messageEl.textContent = "The board is full and no one won!\nIt's a draw!";
     } else {
-      displayMessage(`${winner.getPlayerName()} has won!`);
+      messageEl.textContent = winner.getPlayerSymbol() + `🏅 ${winner.getPlayerName()} has won!`;
     }
   };
 
-  return { displayRoundMessage, displayEndResult };
+  return { updateBoard, displayRoundMessage, displayEndResult };
 })();
 
 const gameController = (() => {
-  const board = gameBoard();
-
-  const playerX = new Player("X", "Player 1");
-  const playerO = new Player("O", "Player 2");
+  const playerX = new Player("🐱", "Cat");
+  const playerO = new Player("🐁", "Mouse");
   let round = 1;
   let gameFinished = false;
 
@@ -122,6 +114,8 @@ const gameController = (() => {
   const switchPlayerTurn = () => {
     activePlayer = activePlayer === playerX ? playerO : playerX;
   };
+
+  uiController.displayRoundMessage(round, activePlayer);
 
   const playRound = (squareInput) => {
     uiController.updateBoard();
@@ -143,7 +137,7 @@ const gameController = (() => {
         .some((validCombination) =>
           validCombination.every(
             (index) =>
-              board.getBoard()[index].getValue() ===
+              gameBoard.getBoard()[index].getValue() ===
               activePlayer.getPlayerSymbol()
           )
         );
@@ -151,11 +145,11 @@ const gameController = (() => {
       return isGameWon;
     };
 
-    uiController.displayMessage(round, activePlayer);
+    uiController.displayRoundMessage(round, activePlayer);
 
-    board.dropSymbol(Number(squareInput), activePlayer);
+    gameBoard.dropSymbol(Number(squareInput), activePlayer);
 
-    if (!board.getIsMoveValid()) {
+    if (!gameBoard.getIsMoveValid()) {
       return;
     }
 
@@ -177,6 +171,7 @@ const gameController = (() => {
 
     round++;
     switchPlayerTurn();
+    uiController.displayRoundMessage(round, activePlayer);
   };
 
   const getIsGameFinished = () => {
@@ -191,6 +186,6 @@ const gameController = (() => {
   return {
     playRound,
     getIsGameFinished,
-    startNewGame
+    startNewGame,
   };
 })();

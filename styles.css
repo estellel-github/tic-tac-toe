@@ -17,26 +17,13 @@ body {
   color: #333;
   display: flex;
   align-items: center;
-  justify-content: center; 
+  justify-content: center;
   margin: 0;
 }
 
 h1 {
-  color: #333;
-  font-size: 4rem;
+  font-size: clamp(24px,42px,56px);
   text-align: center;
-  margin: 0 0 20px;
-}
-
-hr {
-  width: 90%;
-  border: none;
-  border-top: 1px solid #ccc;
-  margin: 20px auto;
-}
-
-h1 + p {
-  margin-bottom: 1rem;
 }
 
 .container {
@@ -50,7 +37,8 @@ h1 + p {
   border-radius: 0 8px;
   background: white;
   align-items: center;
-  justify-content: space-around;
+  gap: 4rem;
+  justify-content: center;
 }
 
 .invisible {
@@ -81,10 +69,17 @@ h1 + p {
 }
 
 .message {
+  width: 90%;
   height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color:rgb(248, 246, 246);
+  padding: 16px;
+  border-radius: 10px;
+  text-align: center;
+  white-space: pre-wrap;
+  font-size: 1.5rem;
 }
 
 .footer {
