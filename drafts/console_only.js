@@ -1,4 +1,4 @@
-// Source, to help with setting structure and logic: https://replit.com/@40percentzinc/ConnectFourConsole#script.js
+// Source, to help with console-only setting structure and logic: https://replit.com/@40percentzinc/ConnectFourConsole#script.js
 
 function Player(symbol, name) {
   this.symbol = symbol;
@@ -162,6 +162,8 @@ const gameController = (() => {
 
   return { playRound, printNewRound, getActivePlayer, getIsGameFinished, switchPlayerTurn };
 })();
+
+// Playing some rounds in console to test
 
 gameController.printNewRound();
 gameController.playRound(4);
