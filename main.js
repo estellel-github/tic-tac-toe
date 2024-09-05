@@ -4,7 +4,7 @@ function Player(symbol) {
   this.symbol = symbol;
 
   const getSymbol = () => {
-    return symbol;
+    return this.symbol;
   };
 
   return { getSymbol };
