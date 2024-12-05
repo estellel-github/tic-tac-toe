@@ -1,6 +1,7 @@
 # Tic-Tac-Toe: Feline vs. Rodent Showdown!
 
 A playful take on the classic Tic-Tac-Toe game featuring cats and mice as players. Built using HTML, CSS, and JavaScript, this project emphasizes modular programming and DOM manipulation.
+This project is a part of **The Odin Project** curriculum.
 
 ![alt text](image.png)
 
